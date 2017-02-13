@@ -6,8 +6,11 @@ This file creates your application.
 """
 
 from app import app
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, Flask, flash
+import smtplib
+from flask import request
 
+app.secret_key = 'hahaha'
 
 ###
 # Routing for your application.
@@ -23,7 +26,45 @@ def home():
 def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
+    
+@app.route('/contact', methods=['POST', 'GET'])
+def contact():
+    if request.method == 'POST':
+        fname = request.form["name"]
+        femail = request.form["email"]
+        sub = request.form["subject"]
+        mess = request.form["msg"]
+        if sendemail(fname, femail, sub, mess):
+            flash('Your message was sent')
+            return redirect(url_for('home'))
+        else:
+            flash('An error occurred')
+            return redirect(url_for('contact'))
+    else:
+        return render_template('contact.html')
+    
+def sendemail(from_name, from_email, subject, msg):
+    to_addr = 'owner@website.com'
+    message = """From: {} <{}>
+    To: {} <{}>
+    Subject: {}
+    {}
+    """
+    to_name = 'Owner'
 
+    message_to_send = message.format(from_name, from_email, to_name, to_addr, subject, msg)
+
+    # Credentials (if needed)
+    username = ''
+    password = ''
+
+    # The actual mail send
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.starttls()
+    server.login(username, password)
+    server.sendmail(from_email, to_addr, message_to_send)
+    server.quit()
+    return "Done"
 
 ###
 # The functions below should be applicable to all Flask apps.

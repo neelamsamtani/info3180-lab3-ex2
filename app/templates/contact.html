@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<h1>Contact Form</h1>
+
+<hr/>
+
+ {% with messages = get_flashed_messages() %}
+    
+        {% if messages %}
+            <ul class=flashes>
+    
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+    
+            </ul>
+        {% endif %}
+
+{% endwith %}
+
+<form action='/contact' method='post'>
+    <p><strong>Name</strong><span> (Required)</span><br/>Please enter your name.</p>
+    <input type="text" name="name"/><br/><br/>
+    <p><strong>E-mail</strong><span> (Required)</span><br/>Please enter your e-mail address.</p>
+    <input type="text" name="email"/><br/><br/>
+    <p><strong>Subject</strong><span> (Required)</span><br/>Please enter the subject of your message.</p>
+    <input type="text" name="subject"/><br/><br/>
+    <p><strong>Message</strong><span> (Required)</span><br/>Please enter the message you would like to send.</p>
+    <textarea rows="6" cols="50" name="msg"></textarea><br/><br/>
+    <button type='submit'>Send Message</button>
+</form>
+
+{% endblock %}
+
+{% block css %}
+
+<style type="text/css">
+    span{
+        color: red;
+    }
+</style>
+
+{% endblock %}
